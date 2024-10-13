@@ -1,4 +1,4 @@
 class Aryaman {
     String name;
-    int bodyCount;
+    int age;
 }
