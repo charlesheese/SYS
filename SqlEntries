@@ -41,7 +41,7 @@ CREATE TABLE Messages (
     sellerId INT,
     buyerId INT,
     content TEXT,
-    dateSent DATETIME
+    dateSent DATETIME,
     FOREIGN KEY (sellerId) REFERENCES Users(userId),
     FOREIGN KEY (buyerId) REFERENCES Users(userId)
 );
