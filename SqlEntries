@@ -36,3 +36,13 @@ CREATE TABLE Payments (
     FOREIGN KEY (orderId) REFERENCES Orders(orderId)
 );
 
+CREATE TABLE Messages {
+    messageId INT PRIMARY KEY AUTO_INCREMENT,
+    sellerId INT,
+    buyerId INT,
+    content TEXT,
+    dateSent DATETIME
+    FOREIGN KEY (sellerId) REFERENCES Users(userId),
+    FOREIGN KEY (buyerId) REFERENCES Users(userId)
+};
+
