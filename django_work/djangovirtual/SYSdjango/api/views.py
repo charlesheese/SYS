@@ -52,3 +52,4 @@ def DeleteProduct(request, pk):
     product.delete()
 
     return Response('Deleted sucessesfully')
+

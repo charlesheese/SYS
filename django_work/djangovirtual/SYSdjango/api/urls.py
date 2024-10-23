@@ -9,3 +9,4 @@ urlpatterns = [
     path('product-delete/<int:pk>/', views.DeleteProduct, name='product-delete'),
 
 ]
+

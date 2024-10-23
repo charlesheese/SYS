@@ -9,4 +9,11 @@ class Product(models.Model):
     createdAt = models.DateTimeField()
 
 def __str__(self):
-    return self.idnnum
+    return self.title
+
+class User(models.Model):
+    username = models.CharField(null= False, blank = False, max_length= 100)
+    email = models.CharField(max_length= 100)
+    phone_num = models.IntegerField()
+    password = models.CharField(max_length= 100)
+    createdAt = models.DateTimeField()
