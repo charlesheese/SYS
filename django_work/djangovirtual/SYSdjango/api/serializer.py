@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from . models import Product
+from . models import User
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
