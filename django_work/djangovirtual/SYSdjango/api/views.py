@@ -66,4 +66,13 @@ def UpdateUser(request, pk):
     if serializer.is_valid():
         serializer.save() 
 
+def ShowAllUsers(request): 
+    users = User.objects.all()
+    serializer = UserSerializer(users, many = True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def ViewUser(request, pk):
+    users = User.objects.get(id=pk)
+    serializer = UserSerializer(users, many = False)
     return Response(serializer.data)
