@@ -85,9 +85,9 @@ DATABASES = {
         'PASSWORD': '',  # Your MySQL password
         'HOST': 'localhost',   # Keep 'localhost' for socket connection
         'PORT': '3306',        # Default MySQL port
+
     }
 }
-
 
 
 # Password validation
