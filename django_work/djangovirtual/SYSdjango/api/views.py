@@ -69,7 +69,7 @@ def UpdateUser(request, pk):
     if serializer.is_valid():
         serializer.save() 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def ShowAllUsers(request): 
     users = User.objects.all()
     serializer = UserSerializer(users, many = True)
