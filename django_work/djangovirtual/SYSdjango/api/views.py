@@ -4,6 +4,9 @@ from rest_framework.decorators import api_view
 
 from . serializer import ProductSerializer
 from . models import Product
+
+from . serializer import UserSerializer
+from . models import User
 # Create your views here.
 @api_view(['GET'])
 def apiOverview(request):
