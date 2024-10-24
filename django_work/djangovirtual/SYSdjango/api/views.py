@@ -56,3 +56,8 @@ def DeleteProduct(request, pk):
 
     return Response('Deleted sucessesfully')
 
+@api_view(['GET'])
+def ViewUser(request, pk):
+    users = User.objects.get(id=pk)
+    serializer = UserSerializer(users, many = False)
+    return Response(serializer.data)
