@@ -51,13 +51,16 @@ def UpdateProduct(request, pk):
     return Response(serializer.data)
 
 @api_view(['GET'])
+def DeleteProduct(request, pk):
+    product = Product.objects.get(id=pk)
+    product.delete()
+
+@api_view(['GET'])
 def DeleteUser(request, pk):
     user = User.objects.get(id=pk)
     user.delete()
 
     return Response('User Deleted sucessesfully')
-
-
 
 @api_view(['POST'])
 def UpdateUser(request, pk):
@@ -75,4 +78,12 @@ def ShowAllUsers(request):
 def ViewUser(request, pk):
     users = User.objects.get(id=pk)
     serializer = UserSerializer(users, many = False)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def CreateUser(request):
+    serializer = UserSerializer(data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+
     return Response(serializer.data)
