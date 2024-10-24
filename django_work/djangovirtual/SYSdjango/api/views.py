@@ -7,6 +7,7 @@ from . models import Product
 
 from . serializer import UserSerializer
 from . models import User
+
 # Create your views here.
 @api_view(['GET'])
 def apiOverview(request):
@@ -50,9 +51,19 @@ def UpdateProduct(request, pk):
     return Response(serializer.data)
 
 @api_view(['GET'])
-def DeleteProduct(request, pk):
-    product = Product.objects.get(id=pk)
-    product.delete()
+def DeleteUser(request, pk):
+    user = User.objects.get(id=pk)
+    user.delete()
 
-    return Response('Deleted sucessesfully')
+    return Response('User Deleted sucessesfully')
 
+
+
+@api_view(['POST'])
+def UpdateUser(request, pk):
+    user = User.objects.get(id=pk)
+    serializer = UserSerializer(instance = user, data = request.data)
+    if serializer.is_valid():
+        serializer.save() 
+
+    return Response(serializer.data)
