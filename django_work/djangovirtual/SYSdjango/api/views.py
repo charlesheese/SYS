@@ -19,7 +19,7 @@ def apiOverview(request):
         'Delete': '/product-delete/<int:id>',
     }
 
-    return Response(api_urls);
+    return Response(api_urls)
 
 @api_view(['GET'])
 def ShowAll(request):
