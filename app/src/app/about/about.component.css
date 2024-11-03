@@ -5,37 +5,75 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: Arial, sans-serif;
   }
   
   /* About Section Styling */
   .about-section {
     padding: 3rem 2rem;
     max-width: 800px;
-    margin: 0 auto; /* Center aligns the section */
+    margin: 0 auto;
     text-align: center;
-    font-family: Arial, sans-serif;
   }
   
   .about-title {
     font-size: 36px;
-    font-weight: bold;
-    color: #4B0082; /* Dark Purple */
+    color: #4B0082;
     margin-bottom: 1.5rem;
   }
   
   .about-text {
     font-size: 18px;
     line-height: 1.6;
-    color: #333; /* Dark gray text for readability */
+    color: #333;
     margin-bottom: 1.5rem;
   }
   
-  .about-text:first-of-type {
-    font-weight: bold;
+  /* Team Section Styling */
+  .team-section {
+    padding: 3rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
   }
   
-  .about-text:last-of-type {
-    font-style: italic;
-    color: #4B0082; /* Adds emphasis to the final paragraph */
+  .team-title {
+    font-size: 32px;
+    color: #4B0082;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+  
+  /* Individual Team Member Styling */
+  .team-member {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .team-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-right: 1.5rem;
+    border: 2px solid #4B0082;
+    object-fit: cover; /* Ensures the image fits within the circle without distortion */
+  }
+  
+  .team-info {
+    text-align: left;
+    flex: 1;
+  }
+  
+  .team-name {
+    font-size: 20px;
+    font-weight: bold;
+    color: #4B0082;
+    margin-bottom: 0.5rem;
+  }
+  
+  .team-description {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.5;
   }
   
