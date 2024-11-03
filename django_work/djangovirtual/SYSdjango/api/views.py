@@ -51,11 +51,6 @@ def UpdateProduct(request, pk):
     return Response(serializer.data)
 
 @api_view(['GET'])
-def DeleteProduct(request, pk):
-    product = Product.objects.get(id=pk)
-    product.delete()
-
-@api_view(['GET'])
 def DeleteUser(request, pk):
     user = User.objects.get(id=pk)
     user.delete()
