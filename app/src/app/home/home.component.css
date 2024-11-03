@@ -7,29 +7,59 @@
     box-sizing: border-box;
   }
   
-
-  
   /* Main Content Styling */
   .main-content {
     padding: 2rem;
+    text-align: center; /* Centers all content inside main-content */
+  }
+  
+  /* Main Title Styling */
+  .main-title {
+    font-size: 48px;
+    font-weight: bold;
+    color: #4B0082; /* Dark Purple */
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Subheader Styling */
+  .subheader {
+    font-size: 32px;
+    color: #9370DB; /* Light Purple */
+    margin-bottom: 1rem;
+  }
+  
+  /* Page Separator Styling */
+  .page-separator {
+    border: none;
+    height: 2px;
+    background-color: #4B0082; /* Dark Purple */
+    width: 50%; /* Adjusts width to half of the container */
+    margin: 1rem auto; /* Centers the separator */
+  }
+  
+  /* Events Section Styling */
+  .events-section {
+    margin-top: 2rem;
   }
   
   .intro-text {
     font-size: 18px;
     margin-bottom: 1rem;
+    color: #333;
   }
   
   .cta-button {
     padding: 0.5rem 1rem;
     font-size: 16px;
-    background-color: #c300ff;
+    background-color: #c300ff; /* Button color */
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 5px;
+    transition: background-color 0.3s ease;
   }
   
   .cta-button:hover {
-    background-color: #0056b3;
+    background-color: #9a00cc; /* Slightly darker purple for hover */
   }
   
