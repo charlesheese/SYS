@@ -1,8 +1,17 @@
-<p>login works!</p>
-
 <!-- <form [formGroup]="loginForm" (submit)="login()" autocomplete="new-password" > after API-->
 <form [formGroup]="loginForm" autocomplete="new-password" >
   <h1 class="mt-0 text-gray-700 pb-1 border-b border-gray-300">Login</h1>
+
+  <div class="mb-4">
+    <label for="username" class="text-sm font-medium mb-1 block">Username</label>
+    <input
+      formControlName="username"
+      id="username"
+      autocomplete="new-password"
+      type="username"
+      class="p-2 h-9 rounded border border-gray-300 w-full bg-white focus:outline-none focus:border-blue-500"
+    />
+  </div>
 
   <div class="mb-4">
     <label for="email" class="text-sm font-medium mb-1 block">Email</label>
@@ -16,6 +25,18 @@
   </div>
 
   <div class="mb-4">
+    <label for="number" class="text-sm font-medium mb-1 block">Phone Number</label>
+    <input
+      formControlName="number"
+      id="number"
+      autocomplete="new-password"
+      type="number"
+      class="p-2 h-9 rounded border border-gray-300 w-full bg-white focus:outline-none focus:border-blue-500"
+    />
+  </div>
+
+
+  <div class="mb-4">
     <label for="password" class="text-sm font-medium mb-1 block">Password</label>
     <input
       formControlName="password"
@@ -25,6 +46,7 @@
       class="p-2 h-9 rounded border border-gray-300 w-full bg-white focus:outline-none focus:border-blue-500"
     />
   </div>
+
 
   <button type="submit"  class="bg-black text-white p-2 w-full rounded text-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
     Login &#8594;

@@ -1,0 +1,35 @@
+/* home.component.css */
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+
+  
+  /* Main Content Styling */
+  .main-content {
+    padding: 2rem;
+  }
+  
+  .intro-text {
+    font-size: 18px;
+    margin-bottom: 1rem;
+  }
+  
+  .cta-button {
+    padding: 0.5rem 1rem;
+    font-size: 16px;
+    background-color: #c300ff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .cta-button:hover {
+    background-color: #0056b3;
+  }
+  
