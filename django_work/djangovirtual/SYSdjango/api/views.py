@@ -55,7 +55,7 @@ def DeleteProduct(request, pk):
     product = User.objects.get(id=pk)
     product.delete()
 
-    return Response('User Deleted sucessesfully')
+    return Response('Product Deleted sucessesfully')
 
 @api_view(['GET'])
 def DeleteUser(request, pk):
