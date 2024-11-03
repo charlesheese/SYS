@@ -1,0 +1,41 @@
+/* about.component.css */
+
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* About Section Styling */
+  .about-section {
+    padding: 3rem 2rem;
+    max-width: 800px;
+    margin: 0 auto; /* Center aligns the section */
+    text-align: center;
+    font-family: Arial, sans-serif;
+  }
+  
+  .about-title {
+    font-size: 36px;
+    font-weight: bold;
+    color: #4B0082; /* Dark Purple */
+    margin-bottom: 1.5rem;
+  }
+  
+  .about-text {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #333; /* Dark gray text for readability */
+    margin-bottom: 1.5rem;
+  }
+  
+  .about-text:first-of-type {
+    font-weight: bold;
+  }
+  
+  .about-text:last-of-type {
+    font-style: italic;
+    color: #4B0082; /* Adds emphasis to the final paragraph */
+  }
+  
