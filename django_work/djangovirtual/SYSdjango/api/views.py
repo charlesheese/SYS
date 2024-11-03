@@ -19,7 +19,7 @@ def apiOverview(request):
         'Delete': '/product-delete/<int:id>',
     }
 
-    return Response(api_urls)
+    return Response(api_urls);
 
 @api_view(['GET'])
 def ShowAll(request):
@@ -51,6 +51,13 @@ def UpdateProduct(request, pk):
     return Response(serializer.data)
 
 @api_view(['GET'])
+def DeleteProduct(request, pk):
+    product = User.objects.get(id=pk)
+    product.delete()
+
+    return Response('Product Deleted sucessesfully')
+
+@api_view(['GET'])
 def DeleteUser(request, pk):
     user = User.objects.get(id=pk)
     user.delete()
@@ -63,3 +70,23 @@ def UpdateUser(request, pk):
     serializer = UserSerializer(instance = user, data = request.data)
     if serializer.is_valid():
         serializer.save() 
+
+
+@api_view(['POST'])
+def CreateUser(request, pk):
+    serializer = UserSerializer(data = request.data)
+    if serializer.is_valid():
+        serializer.save()
+
+@api_view(['GET'])
+def ShowAllUsers(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users, many = True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def ViewUser(request, pk):
+    user = user.objects.get(id=pk)
+    serializer = UserSerializer(user, many = False)
+    return Response(serializer.data)
