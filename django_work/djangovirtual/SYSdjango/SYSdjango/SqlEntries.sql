@@ -13,7 +13,7 @@ CREATE TABLE Products (
     price DECIMAL(10, 2) NOT NULL,
     sellerId INT,
     createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (sellerId) REFERENCES Users(userId)
+    FOREIGN KEY (sellerId) REFERENCES Users (userId)
 );
 
 CREATE TABLE Orders (
@@ -23,8 +23,8 @@ CREATE TABLE Orders (
     quantity INT NOT NULL,
     totalPrice DECIMAL(10, 2) NOT NULL,
     orderDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (buyerId) REFERENCES Users(userId),
-    FOREIGN KEY (productId) REFERENCES Products(productId)
+    FOREIGN KEY (buyerId) REFERENCES Users (userId),
+    FOREIGN KEY (productId) REFERENCES Products (productId)
 );
 
 CREATE TABLE Payments (
@@ -32,8 +32,12 @@ CREATE TABLE Payments (
     orderId INT,
     amount DECIMAL(10, 2) NOT NULL,
     paymentDate DATETIME DEFAULT CURRENT_TIMESTAMP,
-    status ENUM('Completed', 'Pending', 'Failed'),
-    FOREIGN KEY (orderId) REFERENCES Orders(orderId)
+    status ENUM(
+        'Completed',
+        'Pending',
+        'Failed'
+    ),
+    FOREIGN KEY (orderId) REFERENCES Orders (orderId)
 );
 
 CREATE TABLE Messages (
@@ -42,7 +46,6 @@ CREATE TABLE Messages (
     buyerId INT,
     content TEXT,
     dateSent DATETIME,
-    FOREIGN KEY (sellerId) REFERENCES Users(userId),
-    FOREIGN KEY (buyerId) REFERENCES Users(userId)
+    FOREIGN KEY (sellerId) REFERENCES Users (userId),
+    FOREIGN KEY (buyerId) REFERENCES Users (userId)
 );
-
