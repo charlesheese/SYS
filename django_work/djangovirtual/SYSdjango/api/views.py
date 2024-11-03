@@ -68,23 +68,3 @@ def UpdateUser(request, pk):
     serializer = UserSerializer(instance = user, data = request.data)
     if serializer.is_valid():
         serializer.save() 
-
-@api_view(['GET'])
-def ShowAllUsers(request): 
-    users = User.objects.all()
-    serializer = UserSerializer(users, many = True)
-    return Response(serializer.data)
-
-@api_view(['GET'])
-def ViewUser(request, pk):
-    users = User.objects.get(id=pk)
-    serializer = UserSerializer(users, many = False)
-    return Response(serializer.data)
-
-@api_view(['POST'])
-def CreateUser(request):
-    serializer = UserSerializer(data = request.data)
-    if serializer.is_valid():
-        serializer.save()
-
-    return Response(serializer.data)
