@@ -16,4 +16,4 @@ class User(models.Model):
     username = models.CharField(null= False, blank = False, max_length= 100)
     email = models.CharField(max_length= 100)
     password = models.CharField(max_length= 100)
-    createdAt = models.DateTimeField()
+    createdAt = models.IntegerField()
