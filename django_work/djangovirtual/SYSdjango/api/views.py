@@ -1,8 +1,9 @@
-from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializer import ProductSerializer, UserSerializer
-from .models import Product, User
+from .serializer import ProductSerializer, UserSerializer, MessageSerializer
+from .models import Product, User, Message
+from django.db.models import Q
+from rest_framework.pagination import PageNumberPagination
 
 # API Overview
 @api_view(['GET'])
@@ -18,15 +19,31 @@ def apiOverview(request):
         'User Create': '/user-create/',
         'User Update': '/user-update/<int:id>',
         'User Delete': '/user-delete/<int:id>',
+        'Message List': '/message-list/<int:sender_id>/<int:recipient_id>/',
+        'Message Create': '/message-create/',
     }
     return Response(api_urls)
+
+class ProductPagination(PageNumberPagination):
+    page_size = 10  # Number of products per page
+    page_size_query_param = 'page_size'
+    max_page_size = 100  # Optional: limits the maximum items per page
 
 # Product Views
 @api_view(['GET'])
 def ShowAll(request):
     products = Product.objects.all()
-    serializer = ProductSerializer(products, many=True)
-    return Response(serializer.data)
+    
+    # Filter by is_sold status if provided in query parameters
+    is_sold = request.query_params.get('is_sold')
+    if is_sold is not None:
+        products = products.filter(is_sold=is_sold.lower() == 'true')
+
+    # Apply pagination
+    paginator = ProductPagination()
+    paginated_products = paginator.paginate_queryset(products, request)
+    serializer = ProductSerializer(paginated_products, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 @api_view(['GET'])
 def ViewProduct(request, pk):
@@ -88,3 +105,19 @@ def DeleteUser(request, pk):
     user = User.objects.get(id=pk)
     user.delete()
     return Response('User deleted successfully')
+
+def ShowMessagesBetweenUsers(request, sender_id, recipient_id):
+    # Retrieve all messages between two users, ordered by timestamp
+    messages = Message.objects.filter(
+        (Q(sender_id=sender_id) & Q(recipient_id=recipient_id)) |
+        (Q(sender_id=recipient_id) & Q(recipient_id=sender_id))
+    ).order_by('timestamp')
+    serializer = MessageSerializer(messages, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def CreateMessage(request):
+    serializer = MessageSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+    return Response(serializer.data)
