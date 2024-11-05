@@ -6,7 +6,7 @@ class Product(models.Model):
     title = models.CharField(null=False, blank=False, max_length=255)  # Reduced max length for title
     sellerID = models.IntegerField()  # Assuming this is an ID, IntegerField is fine
     price = models.DecimalField(max_digits=6, decimal_places=2, null=False, blank=False)
-    createdAtProduct = models.DateTimeField(null=False, blank=False)  # Changed to DateTimeField for date storage
+    createdAtProduct = models.DateField(null=False, blank=False)  # Changed to DateTimeField for date storage
 
 
 def __str__(self):
