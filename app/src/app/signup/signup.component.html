@@ -10,7 +10,7 @@
         </button>
       </div>
   <!-- <form [formGroup]="loginForm" (submit)="login()" autocomplete="new-password" > after API-->
-      <form [formGroup]="loginForm" autocomplete="new-password">
+      <form [formGroup]="loginForm" (ngSubmit)="onSignupSubmit()" autocomplete="new-password">
         <h1 class="text-lg font-semibold text-gray-800 mb-6">Sign Up</h1>
   
         <div class="mb-4">
