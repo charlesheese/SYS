@@ -1,0 +1,98 @@
+/* General page styling */
+html, body {
+    background-color: #1e1e2f; /* Dark purple background */
+    color: #e0e0e0; /* Light grey text */
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+  }
+  
+  /* Header styling */
+  header h1 {
+    text-align: center;
+    font-size: 3em;
+    font-weight: bold;
+    color: #b19cd9; /* Light purple heading */
+    margin: 20px 0;
+  }
+  
+  /* Events container */
+  .events-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* Category title */
+  .events-container h2 {
+    width: 100%;
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold;
+    color: #b19cd9; /* Light purple heading */
+    margin: 20px 0;
+  }
+  
+  /* Category section styling */
+  .category {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    width: 100%; /* Full width of the page */
+    padding: 0 20px; /* Small padding on sides */
+  }
+  
+  /* Event card styling */
+  .event-card {
+    background-color: #2b2b3d; /* Darker purple for card background */
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    width: 300px;
+    max-width: 90vw; /* Responsiveness on small screens */
+    transition: transform 0.3s ease;
+  }
+  
+  .event-card:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Event image */
+  .event-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  /* Event info styling */
+  .event-info {
+    padding: 20px;
+  }
+  
+  .event-info h3 {
+    color: #d1b3ff; /* Light purple text */
+    font-size: 1.5em;
+    margin: 0;
+  }
+  
+  .event-info p {
+    color: #c7c7d9; /* Soft grey text */
+    margin: 5px 0;
+    font-size: 1em;
+  }
+  
+  /* Make the page responsive */
+  @media (min-width: 768px) {
+    .category .event-card {
+      flex: 1 1 300px;
+      max-width: 300px; /* Keeps card width consistent */
+    }
+  }
+  
