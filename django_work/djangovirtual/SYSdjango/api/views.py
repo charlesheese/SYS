@@ -1,9 +1,13 @@
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .serializer import ProductSerializer, UserSerializer, MessageSerializer
-from .models import Product, User, Message
-from django.db.models import Q
+from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token  # Token Authentication
+from .serializer import ProductSerializer, UserSerializer, UserRegisterSerializer, UserLoginSerializer
+from .models import Product, User
+from django.db.models import Q
 
 # API Overview
 @api_view(['GET'])
@@ -19,27 +23,24 @@ def apiOverview(request):
         'User Create': '/user-create/',
         'User Update': '/user-update/<int:id>',
         'User Delete': '/user-delete/<int:id>',
-        'Message List': '/message-list/<int:sender_id>/<int:recipient_id>/',
-        'Message Create': '/message-create/',
+        'User Register': '/register/',
+        'User Login': '/login/',
     }
     return Response(api_urls)
 
 class ProductPagination(PageNumberPagination):
-    page_size = 10  # Number of products per page
+    page_size = 10
     page_size_query_param = 'page_size'
-    max_page_size = 100  # Optional: limits the maximum items per page
+    max_page_size = 100
 
 # Product Views
 @api_view(['GET'])
 def ShowAll(request):
     products = Product.objects.all()
-    
-    # Filter by is_sold status if provided in query parameters
     is_sold = request.query_params.get('is_sold')
     if is_sold is not None:
         products = products.filter(is_sold=is_sold.lower() == 'true')
 
-    # Apply pagination
     paginator = ProductPagination()
     paginated_products = paginator.paginate_queryset(products, request)
     serializer = ProductSerializer(paginated_products, many=True)
@@ -106,18 +107,27 @@ def DeleteUser(request, pk):
     user.delete()
     return Response('User deleted successfully')
 
-def ShowMessagesBetweenUsers(request, sender_id, recipient_id):
-    # Retrieve all messages between two users, ordered by timestamp
-    messages = Message.objects.filter(
-        (Q(sender_id=sender_id) & Q(recipient_id=recipient_id)) |
-        (Q(sender_id=recipient_id) & Q(recipient_id=sender_id))
-    ).order_by('timestamp')
-    serializer = MessageSerializer(messages, many=True)
-    return Response(serializer.data)
+# Registration and Login Views
+class UserRegisterView(APIView):
+    def post(self, request):
+        serializer = UserRegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['POST'])
-def CreateMessage(request):
-    serializer = MessageSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-    return Response(serializer.data)
+class UserLoginView(APIView):
+    def post(self, request):
+        serializer = UserLoginSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            password = serializer.validated_data['password']
+            user = authenticate(request, email=email, password=password)
+            if user:
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({"token": token.key, "message": "Login successful"}, status=status.HTTP_200_OK)
+            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+

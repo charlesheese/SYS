@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'api.apps.ApiConfig',
+    'api.apps.ApiConfig',  # Ensure 'api' matches your app name
     'rest_framework',
-
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -85,10 +85,12 @@ DATABASES = {
         'PASSWORD': '',  # Your MySQL password
         'HOST': 'localhost',   # Keep 'localhost' for socket connection
         'PORT': '3306',        # Default MySQL port
-
     }
 }
 
+
+# Custom User model
+AUTH_USER_MODEL = 'api.User'  # Replace 'api' with your app name if different
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -130,3 +132,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

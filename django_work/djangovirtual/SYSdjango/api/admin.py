@@ -8,9 +8,14 @@ class ProductAdmin(admin.ModelAdmin):
     search_fields = ('title', 'sellerID')  # Allows search by 'title' and 'sellerID'
 
 # User Admin configuration
+
+
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('userID', 'username', 'email', 'createdAt')  # Columns to show in list view
-    search_fields = ('username', 'email')  # Allows search by 'username' and 'email'
+    list_display = ('id', 'username', 'email', 'created_at')
+    search_fields = ('username', 'email')
+    readonly_fields = ('created_at',)
+
+
 
 # Register models with their custom admin classes
 admin.site.register(Product, ProductAdmin)

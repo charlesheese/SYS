@@ -1,27 +1,24 @@
 from django.urls import path
-from . import views
+from .views import apiOverview, ShowAll, ViewProduct, CreateProduct, UpdateProduct, DeleteProduct
+from .views import ShowAllUsers, ViewUser, CreateUser, UpdateUser, DeleteUser
+from .views import UserRegisterView, UserLoginView
 
 urlpatterns = [
-    path('', views.apiOverview, name='apiOverview'),
-    
-    # Product endpoints
-    path('product-list/', views.ShowAll, name='product-list'),  # Product listing with filtering support
-    path('product-detail/<int:pk>/', views.ViewProduct, name='product-detail'),
-    path('product-create/', views.CreateProduct, name='product-create'),
-    path('product-update/<int:pk>/', views.UpdateProduct, name='product-update'),
-    path('product-delete/<int:pk>/', views.DeleteProduct, name='product-delete'),
-    
-    # User endpoints
-    path('user-list/', views.ShowAllUsers, name='user-list'),
-    path('user-detail/<int:pk>/', views.ViewUser, name='user-detail'),
-    path('user-create/', views.CreateUser, name='user-create'),
-    path('user-update/<int:pk>/', views.UpdateUser, name='user-update'),
-    path('user-delete/<int:pk>/', views.DeleteUser, name='user-delete'),
-    
-    # Message endpoints (if applicable)
-    path('message-list/<int:sender_id>/<int:recipient_id>/', views.ShowMessagesBetweenUsers, name='message-list'),
-    path('message-create/', views.CreateMessage, name='message-create'),
+    path('', apiOverview, name="api-overview"),
+    path('product-list/', ShowAll, name="product-list"),
+    path('product-detail/<int:pk>/', ViewProduct, name="product-detail"),
+    path('product-create/', CreateProduct, name="product-create"),
+    path('product-update/<int:pk>/', UpdateProduct, name="product-update"),
+    path('product-delete/<int:pk>/', DeleteProduct, name="product-delete"),
+    path('user-list/', ShowAllUsers, name="user-list"),
+    path('user-detail/<int:pk>/', ViewUser, name="user-detail"),
+    path('user-create/', CreateUser, name="user-create"),
+    path('user-update/<int:pk>/', UpdateUser, name="user-update"),
+    path('user-delete/<int:pk>/', DeleteUser, name="user-delete"),
+    path('register/', UserRegisterView.as_view(), name="register"),
+    path('login/', UserLoginView.as_view(), name="login"),
 ]
+
 # /api/product-list/?is_sold=false
 # Sort by price ascending: /api/product-list/?sort_by=price&order=asc
 # Sort by price descending: /api/product-list/?sort_by=price&order=desc
