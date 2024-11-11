@@ -12,7 +12,7 @@ body {
 
 .intro-section {
   padding: 40px;
-  color: #6a0dad;
+  color: rgb(182, 29, 29);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -43,7 +43,7 @@ body {
 
 .trending-section h2, .all-events-section h2 {
   font-size: 1.8em;
-  color: #6a0dad;
+  color: rgb(182, 29, 29);
   text-align: left;
   margin-bottom: 20px;
   font-weight: bold;
@@ -87,7 +87,7 @@ body {
   position: absolute;
   bottom: 0;
   width: 100%;
-  background-color: rgba(106, 13, 173, 0.7); /* Semi-transparent purple */
+  background-color: rgb(182, 29, 29); /* Semi-transparent purple */
   padding: 10px;
   color: #fff;
 }
