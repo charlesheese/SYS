@@ -18,7 +18,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         # Check if the email is a .edu address
-        if not value.endswith('northeastern.edu'):
+        if not value.endswith('.edu'):
             raise serializers.ValidationError("Email must be a .northeastern.edu address")
         try:
             validate_email(value)
