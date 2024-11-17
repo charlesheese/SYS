@@ -15,7 +15,7 @@ html, body {
     text-align: center;
     font-size: 3em;
     font-weight: bold;
-    color: #b19cd9; /* Light purple heading */
+    color: rgb(182, 29, 29); /* Light purple heading */
     margin: 20px 0;
   }
   
@@ -35,7 +35,7 @@ html, body {
     text-align: center;
     font-size: 2em;
     font-weight: bold;
-    color: #b19cd9; /* Light purple heading */
+    color: rgb(182, 29, 29); /* Light purple heading */
     margin: 20px 0;
   }
   
@@ -77,7 +77,7 @@ html, body {
   }
   
   .event-info h3 {
-    color: #d1b3ff; /* Light purple text */
+    color: rgb(182, 29, 29); /* Light purple text */
     font-size: 1.5em;
     margin: 0;
   }
