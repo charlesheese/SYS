@@ -11,27 +11,34 @@ class UserSerializer(serializers.ModelSerializer):
 # New serializer for user registration
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
-
+    verification_code = serializers.CharField(write_only=True, required=True) 
     class Meta:
         model = User
-        fields = ['email', 'username', 'password']
+        fields = ['email', 'username', 'password', 'verification_code']
 
-    def validate_email(self, value):
-        # Check if the email is a .edu address
-        if not value.endswith('.edu'):
-            raise serializers.ValidationError("Email must be a .northeastern.edu address")
-        try:
-            validate_email(value)
-        except ValidationError:
-            raise serializers.ValidationError("Invalid email format")
-        return value
+    def validate(self, attrs):
+        # Validate the email field
+        email = attrs.get('email')
+        if not email:
+            raise serializers.ValidationError({"email": "This field is required."})
+        if not email.endswith('@northeastern.edu'):
+            raise serializers.ValidationError({"email": "Email must be a northeastern.edu address."})
+        
+        code = attrs.get('verification_code')
+        if code != '1234':  # Static code for now
+            raise serializers.ValidationError({"verification_code": "Invalid verification code"})
+        
+        # Return the validated attributes
+        return attrs
 
     def create(self, validated_data):
         # Create a new user and hash the password
+        validated_data['email'] = validated_data['email'].lower()
         user = User(
             email=validated_data['email'],
             username=validated_data['username']
         )
+        validated_data.pop('verification_code', None)
         user.set_password(validated_data['password'])
         user.save()
         return user
@@ -44,18 +51,10 @@ class UserLoginSerializer(serializers.Serializer):
 
 class ProductSerializer(serializers.ModelSerializer):
     # Define a field to retrieve the seller's information
-    seller = serializers.SerializerMethodField()
+    seller = UserSerializer(read_only=True)  # Use UserSerializer directly for the seller
 
     class Meta:
         model = Product
-        fields = ['id', 'productID', 'title', 'price', 'createdAtProduct', 'is_sold', 'seller']
-
-    def get_seller(self, obj):
-        # Retrieve the User associated with the sellerID if it exists
-        try:
-            user = User.objects.get(userID=obj.sellerID)
-            return UserSerializer(user).data
-        except User.DoesNotExist:
-            return None  # If the user doesn't exist, return None
+        fields = ['productID', 'title', 'price', 'created_at', 'is_sold', 'seller']
 
 

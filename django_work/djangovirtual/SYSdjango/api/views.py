@@ -8,6 +8,10 @@ from rest_framework.authtoken.models import Token  # Token Authentication
 from .serializer import ProductSerializer, UserSerializer, UserRegisterSerializer, UserLoginSerializer
 from .models import Product, User
 from django.db.models import Q
+from django.http import Http404
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+
 
 # API Overview
 @api_view(['GET'])
@@ -35,6 +39,7 @@ class ProductPagination(PageNumberPagination):
 
 # Product Views
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def ShowAll(request):
     products = Product.objects.all()
     is_sold = request.query_params.get('is_sold')
@@ -48,7 +53,11 @@ def ShowAll(request):
 
 @api_view(['GET'])
 def ViewProduct(request, pk):
-    product = Product.objects.get(id=pk)
+    try:
+        product = Product.objects.get(productID=pk)  # Adjust field name as per your model
+    except Product.DoesNotExist:
+        return Response({"error": "Product not found"}, status=404)
+    
     serializer = ProductSerializer(product, many=False)
     return Response(serializer.data)
 
@@ -75,23 +84,30 @@ def DeleteProduct(request, pk):
 
 # User Views
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def ShowAllUsers(request):
     users = User.objects.all()
     serializer = UserSerializer(users, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def ViewUser(request, pk):
-    user = User.objects.get(id=pk)
+    try:
+        user = User.objects.get(id=pk)
+    except User.DoesNotExist:
+        return Response({"error": "User not found"}, status=404)
+
     serializer = UserSerializer(user, many=False)
     return Response(serializer.data)
 
 @api_view(['POST'])
 def CreateUser(request):
-    serializer = UserSerializer(data=request.data)
+    serializer = UserRegisterSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-    return Response(serializer.data)
+        return Response({"message": "User created successfully"}, status=201)
+    return Response(serializer.errors, status=400)
 
 @api_view(['POST'])
 def UpdateUser(request, pk):
@@ -110,6 +126,9 @@ def DeleteUser(request, pk):
 # Registration and Login Views
 class UserRegisterView(APIView):
     def post(self, request):
+
+        print("Verification code: 1234") 
+        
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
