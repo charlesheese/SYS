@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -78,14 +79,10 @@ WSGI_APPLICATION = 'SYSdjango.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'emptydata',  # Your database name
-        'USER': 'root',    # Your MySQL username
-        'PASSWORD': '',  # Your MySQL password
-        'HOST': 'localhost',   # Keep 'localhost' for socket connection
-        'PORT': '3306',        # Default MySQL port
-    }
+    'default': dj_database_url.config(
+        default='postgresql://postgres:nMZhkYoasMyuGaDRfLvdjLJmRujyWyNq@junction.proxy.rlwy.net:41785/railway',
+        conn_max_age=600
+    )
 }
 
 
@@ -132,4 +129,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # Use your email provider's SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'aryamanwade@gmail.com'  # Replace with your email
+EMAIL_HOST_PASSWORD = 'hszg ifkd wfvw ahpw'  # Replace with your email password
 
