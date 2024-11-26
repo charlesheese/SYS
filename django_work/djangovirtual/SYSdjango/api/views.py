@@ -138,15 +138,18 @@ class UserRegisterView(APIView):
 class UserLoginView(APIView):
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
+
         if serializer.is_valid():
-            email = serializer.validated_data['email']
-            password = serializer.validated_data['password']
-            user = authenticate(request, email=email, password=password)
-            if user:
-                token, created = Token.objects.get_or_create(user=user)
-                return Response({"token": token.key, "message": "Login successful"}, status=status.HTTP_200_OK)
-            return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            user = serializer.validated_data['user']
+
+            # Generate or retrieve token
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({
+                "token": token.key,
+                "message": "Login successful"
+            }, status=status.HTTP_200_OK)
+
+        return Response({"error": "Data is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 
