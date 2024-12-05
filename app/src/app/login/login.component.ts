@@ -1,18 +1,17 @@
 import { Component } from '@angular/core';
-import { FormControl,FormGroup, Validators } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { RouterLink, Router, RouterLinkActive } from '@angular/router';
 import { NavbarComponent } from '../navbar/navbar.component';
+import { CommonModule } from '@angular/common';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Router, RouterLink } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, NavbarComponent],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  imports: [NavbarComponent, RouterLink, ReactiveFormsModule],
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
   loginForm = new FormGroup({
@@ -20,10 +19,31 @@ export class LoginComponent {
     password: new FormControl('', Validators.required),
   });
 
-  // login() {
-  //   // CALL API with username and password
-  //   if (this.loginForm.invalid) return;
+  errorMessage: string = ''; // Holds error message for UI feedback
 
-  //   alert('Calling backend to login');
-  // }
+  constructor(private http: HttpClient, private router: Router) {}
+
+  login() {
+    if (this.loginForm.invalid) {
+      this.errorMessage = 'Please fill in all required fields correctly.';
+      return;
+    }
+
+    const loginData = this.loginForm.value; // Get form data
+    const apiUrl = 'https://your-backend-railway-url.com/login/'; // Django API endpoint
+
+    this.http.post(apiUrl, loginData).subscribe({
+      next: (response: any) => {
+        // Save the token in localStorage
+        localStorage.setItem('token', response.token);
+
+        // Redirect to a protected route (e.g., Dashboard)
+        this.router.navigate(['/dashboard']);
+      },
+      error: (error) => {
+        console.error('Login error:', error);
+        this.errorMessage = 'Invalid email or password. Please try again.';
+      },
+    });
+  }
 }
