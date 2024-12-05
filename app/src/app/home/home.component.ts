@@ -8,7 +8,7 @@ import { RouterLink, Router, RouterLinkActive } from '@angular/router';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [NavbarComponent, RouterLink],
+  imports: [NavbarComponent, RouterLink, CommonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
