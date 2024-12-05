@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',  # Ensure 'api' matches your app name
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
