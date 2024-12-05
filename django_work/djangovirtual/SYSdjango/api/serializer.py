@@ -2,6 +2,7 @@ from rest_framework import serializers
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 from .models import Product, User
+from django.contrib.auth import authenticate
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -47,6 +48,20 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        email = data.get("email")
+        password = data.get("password")
+
+        # Authenticate user using email
+        user = authenticate(username=email, password=password)
+
+        if not user:
+            raise serializers.ValidationError("Data is incorrect")
+
+        data['user'] = user
+        return data
+
 
 
 class ProductSerializer(serializers.ModelSerializer):
