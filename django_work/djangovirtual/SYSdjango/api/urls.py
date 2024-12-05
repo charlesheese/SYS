@@ -3,6 +3,7 @@ from .views import apiOverview, ShowAll, ViewProduct, CreateProduct, UpdateProdu
 from .views import ShowAllUsers, ViewUser, CreateUser, UpdateUser, DeleteUser
 from .views import UserRegisterView, UserLoginView
 
+
 urlpatterns = [
     path('', apiOverview, name="api-overview"),
     path('product-list/', ShowAll, name="product-list"),
