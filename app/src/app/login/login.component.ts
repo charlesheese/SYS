@@ -5,12 +5,14 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
-  imports: [NavbarComponent, RouterLink, ReactiveFormsModule],
+  imports: [NavbarComponent, RouterLink, ReactiveFormsModule, HttpClientModule],
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
@@ -30,7 +32,7 @@ export class LoginComponent {
     }
 
     const loginData = this.loginForm.value; // Get form data
-    const apiUrl = 'https://your-backend-railway-url.com/login/'; // Django API endpoint
+    const apiUrl = 'https://postgres-production-82f9.up.railway.app/api/login'; // Django API endpoint
 
     this.http.post(apiUrl, loginData).subscribe({
       next: (response: any) => {
@@ -38,7 +40,7 @@ export class LoginComponent {
         localStorage.setItem('token', response.token);
 
         // Redirect to a protected route (e.g., Dashboard)
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/home']);
       },
       error: (error) => {
         console.error('Login error:', error);

@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'SYSdjango.urls'
@@ -138,3 +139,6 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'aryamanwade@gmail.com'  # Replace with your email
 EMAIL_HOST_PASSWORD = 'hszg ifkd wfvw ahpw'  # Replace with your email password
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:4200"
+]
