@@ -1,0 +1,25 @@
+<div class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
+      <form [formGroup]="verifyForm" (ngSubmit)="onVerifySubmit()" autocomplete="off">
+        <h1 class="text-lg font-semibold text-gray-800 mb-6">Verify Your Email</h1>
+        <div class="mb-4">
+          <label for="verification_code" class="sr-only">Verification Code</label>
+          <input
+            formControlName="verification_code"
+            id="verification_code"
+            type="text"
+            class="w-full p-3 border border-gray-300 rounded-md bg-gray-50 focus:outline-none focus:border-gray-400"
+            placeholder="Enter verification code"
+            autocomplete="off"
+          />
+        </div>
+        <button
+          type="submit"
+          class="w-full bg-black text-white py-3 rounded-md font-medium text-center hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-700"
+        >
+          Verify
+        </button>
+      </form>
+    </div>
+  </div>
+  

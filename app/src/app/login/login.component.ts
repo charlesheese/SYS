@@ -1,18 +1,17 @@
 import { Component } from '@angular/core';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { EmailValidator, FormControl, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
-
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
-  imports: [NavbarComponent, RouterLink, ReactiveFormsModule, HttpClientModule],
+  imports: [NavbarComponent, RouterLink, ReactiveFormsModule, HttpClientModule, CommonModule],
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
@@ -31,8 +30,12 @@ export class LoginComponent {
       return;
     }
 
-    const loginData = this.loginForm.value; // Get form data
-    const apiUrl = 'https://postgres-production-82f9.up.railway.app/api/login'; // Django API endpoint
+    const loginData = {
+      email: this.loginForm.value.email, // Adjust based on backend expectation
+      password: this.loginForm.value.password,
+    };
+
+    const apiUrl = 'http://127.0.0.1:8000/api/login/'; // Django API endpoint
 
     this.http.post(apiUrl, loginData).subscribe({
       next: (response: any) => {
@@ -44,7 +47,13 @@ export class LoginComponent {
       },
       error: (error) => {
         console.error('Login error:', error);
-        this.errorMessage = 'Invalid email or password. Please try again.';
+        
+        // Enhanced error handling
+        if (error.status === 400) {
+          this.errorMessage = error.error.error || 'Invalid email or password. Please try again.';
+        } else {
+          this.errorMessage = 'An unexpected error occurred. Please try again later.';
+        }
       },
     });
   }

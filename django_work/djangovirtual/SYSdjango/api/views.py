@@ -6,11 +6,13 @@ from rest_framework.pagination import PageNumberPagination
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token  # Token Authentication
 from .serializer import ProductSerializer, UserSerializer, UserRegisterSerializer, UserLoginSerializer
-from .models import Product, User
+from .models import Product, User, VerificationCode
 from django.db.models import Q
 from django.http import Http404
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
+import random
+from django.core.mail import send_mail
 
 
 # API Overview
@@ -123,17 +125,36 @@ def DeleteUser(request, pk):
     user.delete()
     return Response('User deleted successfully')
 
-# Registration and Login Views
 class UserRegisterView(APIView):
     def post(self, request):
-
-        print("Verification code: 1234") 
-        
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
+            # Save the user
+            user = serializer.save()
+
+            # Generate a random verification code
+            verification_code = str(random.randint(100000, 999999))
+
+            # Save the verification code in the database
+            VerificationCode.objects.create(email=user.email, code=verification_code)
+
+            # Send the verification code to the user's email
+            send_mail(
+                'Your Verification Code',
+                f'Your verification code is: {verification_code}',
+                'noreply@example.com',
+                [user.email],
+                fail_silently=False,
+            )
+
+            return Response(
+                {"message": "User registered successfully. Please check your email for the verification code."},
+                status=status.HTTP_201_CREATED
+            )
+
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class UserLoginView(APIView):
     def post(self, request):
@@ -149,7 +170,27 @@ class UserLoginView(APIView):
                 "message": "Login successful"
             }, status=status.HTTP_200_OK)
 
-        return Response({"error": "Data is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": "Email or Password is Incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+    
+# Endpoint to verify the user's code
+class VerifyCodeView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        code = request.data.get('verification_code')
+
+        if not email or not code:
+            return Response(
+                {"error": "Email and verification code are required."},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        try:
+            # Check if the code matches
+            verification = VerificationCode.objects.get(email=email, code=code)
+            verification.delete()  # Remove the code after successful verification
+            return Response({"message": "Verification successful!"}, status=status.HTTP_200_OK)
+        except VerificationCode.DoesNotExist:
+            return Response({"error": "Invalid verification code."}, status=status.HTTP_400_BAD_REQUEST)
 
 
 

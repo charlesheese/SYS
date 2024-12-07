@@ -12,10 +12,10 @@ class UserSerializer(serializers.ModelSerializer):
 # New serializer for user registration
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
-    verification_code = serializers.CharField(write_only=True, required=True) 
+
     class Meta:
         model = User
-        fields = ['email', 'username', 'password', 'verification_code']
+        fields = ['email', 'username', 'password']
 
     def validate(self, attrs):
         # Validate the email field
@@ -24,27 +24,21 @@ class UserRegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"email": "This field is required."})
         if not email.endswith('@northeastern.edu'):
             raise serializers.ValidationError({"email": "Email must be a northeastern.edu address."})
-        
-        code = attrs.get('verification_code')
-        if code != '1234':  # Static code for now
-            raise serializers.ValidationError({"verification_code": "Invalid verification code"})
-        
-        # Return the validated attributes
+
         return attrs
 
     def create(self, validated_data):
-        # Create a new user and hash the password
+        # Create and save a new user instance
         validated_data['email'] = validated_data['email'].lower()
         user = User(
             email=validated_data['email'],
             username=validated_data['username']
         )
-        validated_data.pop('verification_code', None)
         user.set_password(validated_data['password'])
         user.save()
         return user
 
-# New serializer for user login
+
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
@@ -53,11 +47,14 @@ class UserLoginSerializer(serializers.Serializer):
         email = data.get("email")
         password = data.get("password")
 
-        # Authenticate user using email
+        # Use `authenticate` to log in with email instead of username
         user = authenticate(username=email, password=password)
 
         if not user:
-            raise serializers.ValidationError("Data is incorrect")
+            raise serializers.ValidationError("Invalid email or password")
+
+        if not user.is_active:
+            raise serializers.ValidationError("User account is disabled")
 
         data['user'] = user
         return data
