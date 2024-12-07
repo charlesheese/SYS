@@ -36,6 +36,4 @@ export class VerifyComponent {
       (error) => {
         console.error('Verification failed:', error);
       }
-    );
-  }
-}
+    );}}
