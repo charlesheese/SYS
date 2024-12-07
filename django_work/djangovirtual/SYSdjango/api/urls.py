@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import apiOverview, ShowAll, ViewProduct, CreateProduct, UpdateProduct, DeleteProduct
 from .views import ShowAllUsers, ViewUser, CreateUser, UpdateUser, DeleteUser
-from .views import UserRegisterView, UserLoginView
+from .views import UserRegisterView, UserLoginView, VerifyCodeView
 
 
 urlpatterns = [
@@ -18,6 +18,8 @@ urlpatterns = [
     path('user-delete/<int:pk>/', DeleteUser, name="user-delete"),
     path('register/', UserRegisterView.as_view(), name="register"),
     path('login/', UserLoginView.as_view(), name="login"),
+    path('verify-code/', VerifyCodeView.as_view(), name="verify-code"),
+
 ]
 
 # /api/product-list/?is_sold=false
