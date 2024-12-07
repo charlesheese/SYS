@@ -125,11 +125,15 @@ def DeleteUser(request, pk):
     user.delete()
     return Response('User deleted successfully')
 
+from django.contrib.auth.models import User
+import random
+
 class UserRegisterView(APIView):
     def post(self, request):
+        # Validate the incoming data
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
-            # Store user data temporarily in the session
+            # Temporarily store user data in the session
             request.session['user_data'] = serializer.validated_data
             
             # Generate a random verification code
@@ -153,6 +157,7 @@ class UserRegisterView(APIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class UserLoginView(APIView):
@@ -184,15 +189,17 @@ class VerifyCodeView(APIView):
             )
 
         try:
-            # Check if the code matches
+            # Check if the verification code is correct
             verification = VerificationCode.objects.get(email=email, code=code)
             
-            # Get the user data from the session
+            # Retrieve the user data from the session
             user_data = request.session.get('user_data')
+
+            # Check if the user data exists in the session
             if not user_data or user_data['email'] != email:
                 return Response({"error": "No user data found or email mismatch."}, status=status.HTTP_400_BAD_REQUEST)
             
-            # Create the user and save it
+            # Create and save the user to the database
             user = User.objects.create(**user_data)
 
             # Remove the verification code after successful verification
@@ -204,6 +211,7 @@ class VerifyCodeView(APIView):
             return Response({"message": "Verification successful! User registered."}, status=status.HTTP_200_OK)
         except VerificationCode.DoesNotExist:
             return Response({"error": "Invalid verification code."}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
