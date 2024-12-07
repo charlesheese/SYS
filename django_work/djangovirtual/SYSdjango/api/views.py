@@ -135,7 +135,7 @@ class UserRegisterView(APIView):
         # Validate the incoming data
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
-            # Temporarily store user data in the session (do not save to the database)
+            # Temporarily store user data in the session (do not save to the database yet)
             request.session['user_data'] = serializer.validated_data
 
             # Generate a random verification code
@@ -191,36 +191,30 @@ class VerifyCodeView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        try:
-            # Step 1: Check if the verification code matches
-            verification = VerificationCode.objects.get(email=email, code=code)
-            
-            # Step 2: Retrieve the user data from the session
-            user_data = request.session.get('user_data')
+        # Check if the verification code matches
+        verification = VerificationCode.objects.filter(email=email, code=code).first()
 
-            # Step 3: Ensure that user data exists in the session and that the email matches
-            if not user_data or user_data['email'] != email:
-                return Response({"error": "No user data found or email mismatch."}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Step 4: Proceed with user creation **ONLY IF the verification code matches**
-            if verification:
-                # Create and save the user to the database
-                user = User.objects.create(**user_data)
-
-                # Step 5: Remove the verification code after successful verification
-                verification.delete()
-
-                # Step 6: Clear the session data after saving the user
-                del request.session['user_data']
-
-                return Response({"message": "Verification successful! User registered."}, status=status.HTTP_200_OK)
-
-            else:
-                return Response({"error": "Invalid verification code."}, status=status.HTTP_400_BAD_REQUEST)
-
-        except VerificationCode.DoesNotExist:
+        if not verification:
             return Response({"error": "Invalid verification code."}, status=status.HTTP_400_BAD_REQUEST)
 
+        # Retrieve user data from the session
+        user_data = request.session.get('user_data')
+
+        if not user_data or user_data['email'] != email:
+            return Response({"error": "No user data found or email mismatch."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Create and save the user to the database
+        user = User.objects.create(**user_data)
+        user.set_password(user_data['password'])  # Ensure the password is set correctly
+        user.save()
+
+        # Delete the verification code after successful verification
+        verification.delete()
+
+        # Clear session data after saving the user
+        del request.session['user_data']
+
+        return Response({"message": "Verification successful! User registered."}, status=status.HTTP_200_OK)
 
 
 
