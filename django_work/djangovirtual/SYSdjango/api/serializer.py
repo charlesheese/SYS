@@ -26,6 +26,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
         return attrs
 
+    # Remove the 'create' method to defer saving until after verification
+
+
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()

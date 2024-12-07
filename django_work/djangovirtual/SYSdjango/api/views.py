@@ -191,7 +191,7 @@ class VerifyCodeView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Check if the verification code matches
+        # Step 1: Check if the verification code matches
         verification = VerificationCode.objects.filter(email=email, code=code).first()
 
         if not verification:
@@ -203,15 +203,15 @@ class VerifyCodeView(APIView):
         if not user_data or user_data['email'] != email:
             return Response({"error": "No user data found or email mismatch."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Create and save the user to the database
+        # Step 4: Create and save the user to the database
         user = User.objects.create(**user_data)
         user.set_password(user_data['password'])  # Ensure the password is set correctly
         user.save()
 
-        # Delete the verification code after successful verification
+        # Step 5: Remove the verification code after successful verification
         verification.delete()
 
-        # Clear session data after saving the user
+        # Step 6: Clear session data after saving the user
         del request.session['user_data']
 
         return Response({"message": "Verification successful! User registered."}, status=status.HTTP_200_OK)
