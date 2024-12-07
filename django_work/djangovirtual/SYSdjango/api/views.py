@@ -128,14 +128,16 @@ def DeleteUser(request, pk):
 from django.contrib.auth.models import User
 import random
 
+import random
+
 class UserRegisterView(APIView):
     def post(self, request):
         # Validate the incoming data
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
-            # Temporarily store user data in the session
+            # Temporarily store user data in the session (do not save to the database)
             request.session['user_data'] = serializer.validated_data
-            
+
             # Generate a random verification code
             verification_code = str(random.randint(100000, 999999))
 
@@ -157,6 +159,7 @@ class UserRegisterView(APIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
@@ -189,28 +192,30 @@ class VerifyCodeView(APIView):
             )
 
         try:
-            # Check if the verification code is correct
+            # Step 1: Check if the verification code matches
             verification = VerificationCode.objects.get(email=email, code=code)
             
-            # Retrieve the user data from the session
+            # Step 2: Retrieve the user data from the session
             user_data = request.session.get('user_data')
 
-            # Check if the user data exists in the session
+            # Step 3: Ensure that user data exists in the session and that the email matches
             if not user_data or user_data['email'] != email:
                 return Response({"error": "No user data found or email mismatch."}, status=status.HTTP_400_BAD_REQUEST)
-            
-            # Create and save the user to the database
+
+            # Step 4: Create and save the user to the database after verification is successful
             user = User.objects.create(**user_data)
 
-            # Remove the verification code after successful verification
+            # Step 5: Remove the verification code after successful verification
             verification.delete()
 
-            # Clear the session data
+            # Step 6: Clear the session data after saving the user
             del request.session['user_data']
 
             return Response({"message": "Verification successful! User registered."}, status=status.HTTP_200_OK)
+
         except VerificationCode.DoesNotExist:
             return Response({"error": "Invalid verification code."}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 
