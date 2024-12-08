@@ -129,24 +129,25 @@ def DeleteUser(request, pk):
 
 class UserRegisterView(APIView):
     def post(self, request):
-        # Validate the incoming data
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
-            # Temporarily store user data in the session (do not save to the database yet)
-            request.session['user_data'] = serializer.validated_data
+            # Save user to the database
+            user = User.objects.create_user(
+                username=serializer.validated_data['username'],
+                email=serializer.validated_data['email'],
+                password=serializer.validated_data['password']
+            )
 
-            # Generate a random verification code
-            verification_code = f"{random.randint(0, 9999):04}"  # Zero-padded 4-digit string
+            # Generate and save the verification code
+            verification_code = f"{random.randint(0, 9999):04}"
+            VerificationCode.objects.create(email=user.email, code=verification_code)
 
-            # Save the verification code in the database
-            VerificationCode.objects.create(email=serializer.validated_data['email'], code=verification_code)
-
-            # Send the verification code to the user's email
+            # Send the code to the user's email
             send_mail(
                 'Your Verification Code',
                 f'Your verification code is: {verification_code}',
-                'abhaywade05@gmail.com',
-                [serializer.validated_data['email']],
+                'your-email@example.com',  # Use a valid email here
+                [user.email],
                 fail_silently=False,
             )
 
@@ -156,6 +157,8 @@ class UserRegisterView(APIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 
 
@@ -178,47 +181,26 @@ class UserLoginView(APIView):
     
 class VerifyCodeView(APIView):
     def post(self, request, email):
-        # The email is obtained from the URL, so we only validate the code
         code = request.data.get('verification_code')
 
         if not code:
-            return Response(
-                {"error": "Verification code is required."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"error": "Verification code is required."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Step 1: Check if the verification code matches the email
         try:
+            # Check the verification code against the email
             verification = VerificationCode.objects.get(email=email, code=code)
         except VerificationCode.DoesNotExist:
+            # If the code is invalid, delete the user and verification code
+            try:
+                user = User.objects.get(email=email)
+                user.delete()  # Delete the user if the code is wrong
+            except User.DoesNotExist:
+                pass  # If the user doesn't exist, no need to delete anything
+            verification.delete()  # Delete the verification code if the code is wrong
             return Response({"error": "Invalid verification code."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Step 2: Retrieve user data from the session
-        user_data = request.session.get('user_data')
+        # If the code is valid, keep the user and verification code
+        # You can add additional actions here to activate the user if needed.
 
-        if not user_data or user_data['email'] != email:
-            return Response({"error": "No user data found or email mismatch."}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Step 3: Create and save the user to the database
-        user = User.objects.create_user(
-            username=user_data['username'],
-            email=user_data['email'],
-            password=user_data['password']  # Hashing handled by `create_user`
-        )
-
-        # Step 4: Delete the verification code after successful verification
-        verification.delete()
-
-        # Step 5: Clear session data after saving the user
-        request.session.pop('user_data', None)
-
-        return Response(
-            {"message": "Verification successful! User registered."},
-            status=status.HTTP_200_OK
-        )
-
-
-
-
-
+        return Response({"message": "Verification successful! User registered."}, status=status.HTTP_200_OK)
 
