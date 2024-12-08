@@ -148,7 +148,7 @@ class UserRegisterView(APIView):
             send_mail(
                 'Your Verification Code',
                 f'Your verification code is: {verification_code}',
-                'noreply@example.com',
+                'abhaywade05@gmail.com',
                 [serializer.validated_data['email']],
                 fail_silently=False,
             )
