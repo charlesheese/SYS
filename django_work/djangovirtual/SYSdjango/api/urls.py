@@ -17,7 +17,7 @@ urlpatterns = [
     path('user-update/<int:pk>/', UpdateUser, name="user-update"),
     path('user-delete/<int:pk>/', DeleteUser, name="user-delete"),
     path('login/', UserLoginView.as_view(), name="login"),
-    path('verify-code/', VerifyCodeView.as_view(), name="verify-code"),
+     path('verify-code/<str:email>/', VerifyCodeView.as_view(), name='verify-code'),
 
 ]
 

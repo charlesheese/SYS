@@ -19,21 +19,34 @@ export class VerifyComponent {
   private verifyUrl = 'http://127.0.0.1:8000/api/verify-code/';
 
   constructor(private http: HttpClient, private route: ActivatedRoute, private router: Router) {
-    // Pre-fill the email from query parameters
     this.route.queryParams.subscribe((params) => {
-      this.verifyForm.patchValue({ email: params['email'] });
+      if (params['email']) {
+        this.verifyForm.patchValue({ email: params['email'] });
+      } else {
+        alert('Email is missing in the URL. Please sign up again.');
+        this.router.navigate(['/signup']);
+      }
     });
   }
 
   onVerifySubmit() {
     const verifyData = this.verifyForm.value;
-
-    this.http.post<any>(this.verifyUrl, verifyData).subscribe(
+    const email = verifyData.email;
+  
+    this.http.post<any>(`${this.verifyUrl}${email}/`, { verification_code: verifyData.verification_code }).subscribe(
       (response) => {
         console.log('Verification successful:', response);
         this.router.navigate(['/login']); // Redirect to login after success
       },
       (error) => {
         console.error('Verification failed:', error);
+        // Display error to the user
+        if (error.status === 400) {
+          alert('Invalid verification code. Please try again.');
+        } else {
+          alert('An unexpected error occurred. Please try again later.');
+        }
       }
-    );}}
+    );
+  }
+}  
