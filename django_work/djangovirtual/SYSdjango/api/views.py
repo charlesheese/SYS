@@ -125,10 +125,7 @@ def DeleteUser(request, pk):
     user.delete()
     return Response('User deleted successfully')
 
-from django.contrib.auth.models import User
-import random
 
-import random
 
 class UserRegisterView(APIView):
     def post(self, request):
@@ -150,7 +147,7 @@ class UserRegisterView(APIView):
                 f'Your verification code is: {verification_code}',
                 'noreply@example.com',
                 [serializer.validated_data['email']],
-                fail_silently=False,
+                fail_silently=True,
             )
 
             return Response(
