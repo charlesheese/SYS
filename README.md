@@ -16,8 +16,8 @@ Messaging System: Facilitates direct communication between buyers and sellers wi
 
 Tech Stack:
 
-Frontend: HTML, CSS, JavaScript 
+Frontend: Angular
 
-Backend: Python 
+Backend: Django
 
-Database: mySQL 
+Database: PostgreSQL
