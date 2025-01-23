@@ -70,7 +70,7 @@ class Product(models.Model):
     
 class VerificationCode(models.Model):
     email = models.EmailField()
-    code = models.CharField(max_length=6)
+    code = models.CharField(max_length= 8)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

@@ -125,24 +125,28 @@ def DeleteUser(request, pk):
     user.delete()
     return Response('User deleted successfully')
 
+
+
 class UserRegisterView(APIView):
     def post(self, request):
         serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
-            # Save the user
-            user = serializer.save()
+            # Save user to the database
+            user = User.objects.create_user(
+                username=serializer.validated_data['username'],
+                email=serializer.validated_data['email'],
+                password=serializer.validated_data['password']
+            )
 
-            # Generate a random verification code
-            verification_code = str(random.randint(100000, 999999))
-
-            # Save the verification code in the database
+            # Generate and save the verification code
+            verification_code = f"{random.randint(0, 9999):04}"
             VerificationCode.objects.create(email=user.email, code=verification_code)
 
-            # Send the verification code to the user's email
+            # Send the code to the user's email
             send_mail(
                 'Your Verification Code',
                 f'Your verification code is: {verification_code}',
-                'noreply@example.com',
+                'your-email@example.com',  # Use a valid email here
                 [user.email],
                 fail_silently=False,
             )
@@ -153,6 +157,9 @@ class UserRegisterView(APIView):
             )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
 
 
 
@@ -172,25 +179,28 @@ class UserLoginView(APIView):
 
         return Response({"error": "Email or Password is Incorrect"}, status=status.HTTP_400_BAD_REQUEST)
     
-# Endpoint to verify the user's code
 class VerifyCodeView(APIView):
-    def post(self, request):
-        email = request.data.get('email')
+    def post(self, request, email):
         code = request.data.get('verification_code')
 
-        if not email or not code:
-            return Response(
-                {"error": "Email and verification code are required."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        if not code:
+            return Response({"error": "Verification code is required."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            # Check if the code matches
+            # Check the verification code against the email
             verification = VerificationCode.objects.get(email=email, code=code)
-            verification.delete()  # Remove the code after successful verification
-            return Response({"message": "Verification successful!"}, status=status.HTTP_200_OK)
         except VerificationCode.DoesNotExist:
+            # If the code is invalid, delete the user and verification code
+            try:
+                user = User.objects.get(email=email)
+                user.delete()  # Delete the user if the code is wrong
+            except User.DoesNotExist:
+                pass  # If the user doesn't exist, no need to delete anything
+            verification.delete()  # Delete the verification code if the code is wrong
             return Response({"error": "Invalid verification code."}, status=status.HTTP_400_BAD_REQUEST)
 
+        # If the code is valid, keep the user and verification code
+        # You can add additional actions here to activate the user if needed.
 
+        return Response({"message": "Verification successful! User registered."}, status=status.HTTP_200_OK)
 

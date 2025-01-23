@@ -9,13 +9,12 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id', 'username', 'email']  # Changed userID to id for the default primary key
 
-# New serializer for user registration
 class UserRegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
 
     class Meta:
         model = User
-        fields = ['email', 'username', 'password']
+        fields = ['username', 'email', 'password']
 
     def validate(self, attrs):
         # Validate the email field
@@ -27,16 +26,8 @@ class UserRegisterSerializer(serializers.ModelSerializer):
 
         return attrs
 
-    def create(self, validated_data):
-        # Create and save a new user instance
-        validated_data['email'] = validated_data['email'].lower()
-        user = User(
-            email=validated_data['email'],
-            username=validated_data['username']
-        )
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+    # Remove the 'create' method to defer saving until after verification
+
 
 
 class UserLoginSerializer(serializers.Serializer):
