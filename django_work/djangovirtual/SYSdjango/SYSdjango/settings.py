@@ -136,14 +136,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'  # Use your email provider's SMTP server
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'abhaywade05@gmail.com'  # Replace with your email
-EMAIL_HOST_PASSWORD = 'lhhz hnut esbk smiz'  # Replace with your email password
-
+EMAIL_HOST_USER = 'charles479.heese@gmail.com'  # Replace with your email
+EMAIL_HOST_PASSWORD = 'somers3396'  # Replace with your email password
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200"
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True  # For development only
-SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_NAME = 'sessionid'
